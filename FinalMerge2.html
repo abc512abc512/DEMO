@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <style>
+  
+    html,
+    body {
+      height: 90%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    #map {
+      height: 90%;
+      width: 100%;
+      background: #000;
+    }
+  
+    </style>
+
+
+  <title>Shuffle Bootstrap Template - Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Shuffle - v4.7.0
+  * Template URL: https://bootstrapmade.com/bootstrap-3-one-page-template-free-shuffle/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+  
+  
+  <main id="main">
+  
+ <!-- ======= Info Box Section ======= -->
+ <section class="info-box py-0">
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <div class="col-lg-7 d-flex flex-column justify-content-center align-items-stretch  order-2 order-lg-1">
+
+        <div class="content">
+          <h3><strong>景點結果輸出</strong><br/>
+              <strong>以下是我們推薦給您的景點呦</strong></h3>
+          <p>
+            根據您現在的地點，依照您輸入的數據，以下推薦三個景點給您參考！每次景點會不太一樣喔！
+          </p>
+        </div>
+
+        <div class="accordion-list">
+          <ul>
+            <li>
+              <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>01</span>   <p id = "po1n" >  </p>   <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
+                <p>
+                  
+                  <p id = "po1a" >  </p></br>
+                  
+                  <a id = "po1lg" onclick="link1()"  >前往查詢最近的地點</a>
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <a data-bs-toggle="collapse" data-bs-target="#accordion-list-2" class="collapsed"><span>02</span> <p id = "po2n" >  </p>   <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
+                <p>
+                  
+                  
+                  <p id = "po2a" >  </p></br>
+                  
+                  <a id = "po1lg" onclick="link2()"  >前往查詢第二近的地點</a>
+                  </script>
+                  
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>03</span> <p id = "po3n" >  </p><i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
+                <p>
+                 
+                  <p id = "po3a" >  </p></br>
+                  
+                    <a id = "po1lg" onclick="link3()"  >前往查詢第三近的地點</a>
+                </p>
+              </div>
+            </li>
+           
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" >
+        <div id="map"></div>
+       
+      </div> 
+    </div>
+
+  </div>
+</section><!-- End Info Box Section -->
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNh6kIxYtiobxt4Y3aTZWrPf4hJuGSG6Y&callback=initMap" async defer></script>
+<script>
+
+  var url = location.href;
+
+   //起始位置
+  var initlat ;
+  var initlon ;
+  //第一近
+  var firslat;
+  var firslon;
+  var firsname;
+  var firsadd;
+  var firslink;
+  //第二近            
+  var secolat;
+  var secolon;
+  var seconame;
+  var secoadd;
+  var secolink;
+  //第三近              
+  var thrdlat;
+  var thrdlon;
+  var thrdname;
+  var thrdadd;
+  var thrdlink;
+
+
+  function link1 () {
+    
+  firslink ="https://www.google.com/search?q=" + `${firsname}`;
+    
+  firslink = encodeURI(firslink);
+  
+  window.open(firslink);
+  }  
+
+  function link2 () {
+
+    secolink ="https://www.google.com/search?q=" + `${seconame}`;
+    
+    secolink = encodeURI(secolink);
+    
+    window.open(secolink);
+
+
+
+ 
+  }  
+
+  function link3 () {
+    thrdlink ="https://www.google.com/search?q=" + `${thrdname}`;
+    
+    thrdlink = encodeURI(thrdlink);
+  
+    window.open(thrdlink);
+
+
+  
+  }  
+
+
+  console.log (url);
+  const decodedURL = decodeURI(url);
+  console.log(decodedURL)
+
+  
+  function getpoint(){
+
+  //取得問號之後的值
+  var temp = decodedURL.split("?");
+
+  //將值再度分開
+  var vars = temp[1].split("&");
+
+  
+ 
+  //一一顯示出來
+  for (var i = 0; i < vars.length; i++) {
+
+     // alert(vars[i]);
+
+  };
+
+  
+  initlat = vars[0] ;
+  initlon = vars[1] ;
+  //第一近
+  firslat = vars[2];
+  firslon = vars[3];
+  firsadd = vars[4];
+  firsname = vars[5];
+
+  console.log (initlat);
+  console.log (initlon);
+  console.log (firslat);
+  console.log (firslon);
+  console.log (firsadd);
+  console.log (firsname);
+ 
+  //第二近            
+  secolat = vars[6];
+  secolon = vars[7];
+  secoadd = vars[8];
+  seconame = vars[9];
+  //第三近              
+  thrdlat = vars[10];
+  thrdlon = vars[11];
+  thrdadd = vars[12];
+  thrdname = vars[13];
+ 
+  console.log (secolat);
+  console.log (secolon);
+  console.log (secoadd);
+  console.log (seconame);
+
+  console.log (thrdlat);
+  console.log (thrdlon);
+  console.log (thrdadd);
+  console.log (thrdname);
+  
+  function insertcontent() {  
+     document.getElementById("po1n").textContent
+      ="景點名稱："+ `${firsname}`; 
+     document.getElementById("po1a").textContent
+      ="地址："+ `${firsadd}`; 
+     
+
+      document.getElementById("po2n").textContent
+      ="景點名稱："+`${seconame}`; 
+     document.getElementById("po2a").textContent
+      ="地址："+ `${secoadd}`; 
+     
+
+
+      document.getElementById("po3n").textContent
+      ="景點名稱："+ `${thrdname}`; 
+     document.getElementById("po3a").textContent
+      ="地址："+ `${thrdadd}`; 
+     
+
+
+            } 
+
+
+
+
+
+
+ insertcontent();          
+ 
+  }
+
+  getpoint ();
+
+
+
+
+
+//等前面值的給完再來初始化地圖
+
+</script>
+
+<script>
+
+
+  var map, marker, lat, lng, ulat, ulng;
+  var nextpage1;
+  var nextpage2;
+  var nextpage3;
+  var butt1;
+  var butt2;
+  var butt3;
+  var mark1;
+  var mark2;
+  var mark3;
+
+
+  function initMap() {
+      navigator.geolocation.watchPosition((position) => {
+          console.log(position.coords);
+          lat = position.coords.latitude;
+          lng = position.coords.longitude;
+          
+          ulat = position.coords.latitude ;
+          ulng = position.coords.longitude ;
+
+
+          
+          
+          // 初始化地圖
+          map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 13,
+              center: { lat: lat, lng: lng }
+          
+          
+          
+          
+          });
+          marker = new google.maps.Marker({
+              position: { lat: lat, lng: lng },
+              map: map,
+              label: "目前地點"
+          
+          });
+
+          mark1 = new google.maps.Marker({
+              position: { lat: Number(firslat) , lng: Number(firslon) },
+              map: map,
+              label: firsname
+          
+          });
+
+          mark2 = new google.maps.Marker({
+              position: { lat: Number(secolat), lng: Number(secolon) },
+              map: map,
+              label: seconame
+          
+          });
+
+
+          mark3 = new google.maps.Marker({
+              position: { lat: Number(thrdlat), lng: Number(thrdlon) },
+              map: map,
+              label: thrdname
+          
+          });
+
+
+
+      });
+      
+  }
+
+  
+ 
+</script>
+<style>
+#info {
+  position: fixed;
+  z-index: 999;
+  bottom: 20px;
+  left: 0px;
+  background: #222;
+  padding: 20px 30px;
+  color: #fff;
+  box-shadow: rgba(0, 0, 0, .5) 0 0 10px;
+  border-radius: 0 5px 5px 0;
+}
+
+#info a {
+  color: #0bf;
+  transition: .2s;
+}
+
+#info a:hover {
+  color: #6df;
+}
+</style>
+ 
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/purecounter/purecounter.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,3185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>google maps api</title>
+    <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNh6kIxYtiobxt4Y3aTZWrPf4hJuGSG6Y&callback=initMap">
+    </script>
+    
+    <script src="jquery.min.js"></script>
+    
+    
+
+</head>
+<style>
+    input[type=text], select {
+      width: 50%;
+      padding: 6px 10px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      box-sizing: border-box;
+      margin:0px auto;
+    }
+    
+    input[type=submit] {
+      width: 50%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 7px 10px;
+      margin: 4px 0;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      margin:0px auto;
+    }
+    
+    input[type=submit]:hover {
+      background-color: #45a049;
+      margin:0px auto;
+    }
+    
+    div {
+      width: 35%;  
+      border-radius: 3px;
+      background-color: #f2f2f200;
+      padding: 3px;
+      margin:0px auto;
+    }
+
+
+
+    </style>
+
+
+    <style>
+        #bg-img {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            z-index: -99;
+        }
+    </style>
+
+    
+
+
+
+<body>
+    <img src="7.jpg" id="bg-img" style="text-align:center;">
+    <h1 class="animate__animated animate__fadeInDown" style="text-align:center; color: #ee8d33;" >歡迎來到</br>
+        <span>Travel Ba! 景點推薦平台</span></h1>
+        <h3 class="animate__animated animate__fadeInDown" style="text-align:center; color: #5f5e5e;" > Travel Ba! 利用五行八字及景點距離分析，替你找出最適合的旅遊場所，讓我們一起歡度假期時光，一同探索各個美麗秘境吧！</h3></br>
+    <div >
+        <form action="/action_page.php" style="text-align:center; color: #000000;" >
+          <label for="fname">中文姓名</label>
+          <input type="text" id="fname" name="firstname" placeholder="請輸入全名...">
+          </br>
+          <label for="lname">生年輸入</label>
+          <input type="text" id="lname" name="lastname" placeholder="請輸入西元年分...">
+        </br>
+          <label for="lname">生月輸入</label>
+          <input type="text" id="lname" name="lastname" placeholder="請輸入月分...">  
+        </br>
+          <label for="lname">生日輸入</label>
+          <input type="text" id="lname" name="lastname" placeholder="請輸入日期...">  
+        </br>
+          <label for="country">出生時辰</label>
+          <select id="country" name="country" placeholder="請選擇時辰...">
+            <option value="outtime">子時：23時——凌晨1時</option>
+            <option value="outtime">丑時：1時——3時</option>
+            <option value="outtime">寅時：3時——5時</option>
+            <option value="outtime">卯時：5時——7時</option>
+            <option value="outtime">辰時：7時——9時</option>
+            <option value="outtime">巳時：9時——11時</option>
+            <option value="outtime">午時：11時——13時</option>
+            <option value="outtime">未時：13時——15時</option>
+            <option value="outtime">申時：15時——17時</option>
+            <option value="outtime">酉時：17時——19時</option>
+            <option value="outtime">戌時：19時——21時</option>
+            <option value="outtime">亥時：21時——23時</option>
+          </select>
+        </br>
+          <label for="country">性別輸入</label>
+          <select id="country" name="country" placeholder="請選擇性別...">
+            <option value="sex">男</option>
+            <option value="sex">女</option>
+            <option value="sex">無性別</option>
+          </select>
+        
+         
+        </form>
+      </div>
+      <script>
+        $(function () {
+    
+            resize_tab();
+        });
+    
+        $(window).resize(function () {
+            resize_tab();
+        }).resize();
+    
+        function resize_tab() {
+    
+            var viewportWidth = $(window).innerWidth();
+            var viewportHeight = $(window).innerHeight();
+    
+            var width = $('#bg-img').width();
+            var height = $('#bg-img').height();
+    
+    
+            if ((viewportWidth / viewportHeight) > (width / height)) {
+    
+                $('#bg-img').css({
+                    'width': '100%',
+                    'height': 'auto',
+                    'margin-left': 0 - width / 2,
+                    'margin-top': 0 - height / 2
+                });
+    
+    
+            } else {
+                $('#bg-img').css({
+                    'width': 'auto',
+                    'height': '100%',
+                    'margin-left': 0 - width / 2,
+                    'margin-top': 0 - height / 2
+                });
+            }
+        }
+    </script> 
+
+
+
+        
+        <!--填入測試的經緯度-->
+    <script>
+
+        
+
+
+
+        //平鎮區(測試用)
+    const jsonStr = `[ {
+            "no": "1",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "虎頭山公園",
+            "address": "桃園市桃園區公園路42號",
+            "latitude": "25.0018141",
+            "longitude": "121.3275309"
+        },
+        {
+            "no": "2",
+            "area": "桃園市桃園區",
+            "type": "a12",
+            "name": "桃園觀光夜市",
+            "address": "桃園市桃園區中正路與號北埔路交叉口",
+            "latitude": "25.0027496",
+            "longitude": "121.3057828"
+        },
+        {
+            "no": "3",
+            "area": "桃園市桃園區",
+            "type": "a8",
+            "name": "可口可樂博物館",
+            "address": "桃園市桃園區興邦路46號",
+            "latitude": "24.9792286",
+            "longitude": "121.3263954"
+        },
+        {
+            "no": "4",
+            "area": "桃園市桃園區",
+            "type": "a2",
+            "name": "桃園市土地公文化館",
+            "address": "桃園市桃園區三民路一段100號",
+            "latitude": "24.998189",
+            "longitude": "121.321246"
+        },
+        {
+            "no": "5",
+            "area": "桃園市桃園區",
+            "type": "a13",
+            "name": "遠東百貨 桃園店",
+            "address": "桃園市桃園區中正路20號",
+            "latitude": "24.9900198",
+            "longitude": "121.3132231"
+        },
+        {
+            "no": "6",
+            "area": "桃園市桃園區",
+            "type": "a13",
+            "name": "新光三越桃園站前店",
+            "address": "桃園市桃園區中正路19號",
+            "latitude": "24.9900164",
+            "longitude": "121.3126097"
+        },
+        {
+            "no": "7",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "國際路 兒童遊戲場HAPPY PLAYGROUND",
+            "address": "桃園市桃園區國際路一段678巷號",
+            "latitude": "24.9772336",
+            "longitude": "121.2893278"
+        },
+        {
+            "no": "8",
+            "area": "桃園市桃園區",
+            "type": "a4",
+            "name": "南門市場",
+            "address": "桃園市桃園區南昌東路330號",
+            "latitude": "24.9919569",
+            "longitude": "121.307249"
+        },
+        {
+            "no": "9",
+            "area": "桃園市桃園區",
+            "type": "a5",
+            "name": "三奇蜜蜂生態農園",
+            "address": "桃園市觀音區民族路780號",
+            "latitude": "25.0407882",
+            "longitude": "121.1250817"
+        },
+        {
+            "no": "10",
+            "area": "桃園市桃園區",
+            "type": "a1",
+            "name": "桃園展演中心",
+            "address": "桃園市桃園區中正路1188號",
+            "latitude": "25.0175106",
+            "longitude": "121.2986658"
+        },
+        {
+            "no": "11",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "向陽公園",
+            "address": "桃園市桃園區文中北路105號對面",
+            "latitude": "24.9955867",
+            "longitude": "121.2888182"
+        },
+        {
+            "no": "12",
+            "area": "桃園市桃園區",
+            "type": "a2",
+            "name": "桃園關帝廟",
+            "address": "桃園市桃園區民生路167號",
+            "latitude": "24.994372",
+            "longitude": "121.312826"
+        },
+        {
+            "no": "13",
+            "area": "桃園市桃園區",
+            "type": "a1",
+            "name": "中國家具博物館",
+            "address": "桃園市桃園區縣府路21號B1",
+            "latitude": "24.9939555",
+            "longitude": "121.3003009"
+        },
+        {
+            "no": "14",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "成功公園",
+            "address": "桃園市桃園區桃11鄉道",
+            "latitude": "25.0167197",
+            "longitude": "121.325792"
+        },
+        {
+            "no": "15",
+            "area": "桃園市桃園區",
+            "type": "a2",
+            "name": "桃園慈護宮",
+            "address": "桃園市桃園區復興路275號",
+            "latitude": "24.9887915",
+            "longitude": "121.3066682"
+        },
+        {
+            "no": "16",
+            "area": "桃園市桃園區",
+            "type": "a4",
+            "name": "桃園多肉市集",
+            "address": "桃園市桃園區大興西路三段738號",
+            "latitude": "24.9964604",
+            "longitude": "121.2790433"
+        },
+        {
+            "no": "17",
+            "area": "桃園市桃園區",
+            "type": "a4",
+            "name": "G10 貨櫃創意市集 Go market",
+            "address": "桃園市桃園區大興西路一段272號",
+            "latitude": "25.0127404",
+            "longitude": "121.3004109"
+        },
+        {
+            "no": "18",
+            "area": "桃園市桃園區",
+            "type": "a1",
+            "name": "祥儀機器人夢工廠",
+            "address": "桃園市桃園區桃鶯路461號",
+            "latitude": "24.9754649",
+            "longitude": "121.3237869"
+        },
+        {
+            "no": "19",
+            "area": "桃園市桃園區",
+            "type": "a2",
+            "name": "桃園忠烈祠暨神社文化園區",
+            "address": "桃園市桃園區成功路三段200號",
+            "latitude": "25.0063218",
+            "longitude": "121.3252367"
+        },
+        {
+            "no": "20",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "風禾公園",
+            "address": "桃園市桃園區慈文路688號",
+            "latitude": "25.0009974",
+            "longitude": "121.2909408"
+        },
+        {
+            "no": "21",
+            "area": "桃園市桃園區",
+            "type": "a2",
+            "name": "桃園景福宮",
+            "address": "桃園市桃園區中正路208號",
+            "latitude": "24.9946798",
+            "longitude": "121.3110164"
+        },
+        {
+            "no": "22",
+            "area": "桃園市桃園區",
+            "type": "a2",
+            "name": "桃園市孔廟",
+            "address": "桃園市桃園區公園路42號",
+            "latitude": "25.0018141",
+            "longitude": "121.3275309"
+        },
+        {
+            "no": "23",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "三民運動公園",
+            "address": "桃園市桃園區三民路一段131號",
+            "latitude": "25.0004933",
+            "longitude": "121.3193014"
+        },
+        {
+            "no": "24",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "陽明運動公園",
+            "address": "桃園市桃園區長沙街十一號",
+            "latitude": "24.9804427",
+            "longitude": "121.3089202"
+        },
+        {
+            "no": "25",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "大有梯田生態公園",
+            "address": "桃園市桃園區民有十街200號",
+            "latitude": "25.0125677",
+            "longitude": "121.3210802"
+        },
+        {
+            "no": "26",
+            "area": "桃園市桃園區",
+            "type": "a8",
+            "name": "桃園七號倉庫-桃園軌道願景館",
+            "address": "桃園市桃園區萬壽路三段245號",
+            "latitude": "24.9899108",
+            "longitude": "121.3155407"
+        },
+        {
+            "no": "27",
+            "area": "桃園市桃園區",
+            "type": "a8",
+            "name": "桃園劍道故事館",
+            "address": "桃園市桃園區永樂街24號",
+            "latitude": "24.9960862",
+            "longitude": "121.3116377"
+        },
+        {
+            "no": "28",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "霖園兒童公園",
+            "address": "桃園市桃園區國聖二街",
+            "latitude": "24.9855214",
+            "longitude": "121.2874622"
+        },
+        {
+            "no": "29",
+            "area": "桃園市桃園區",
+            "type": "a7",
+            "name": "朝陽森林公園",
+            "address": "桃園市桃園區三民路二段212號",
+            "latitude": "25.0005446",
+            "longitude": "121.3120473"
+        },
+        {
+            "no": "30",
+            "area": "桃園市桃園區",
+            "type": "a8",
+            "name": "桃園市立田徑場",
+            "address": "桃園市桃園區三民路一段1號",
+            "latitude": "24.9951773",
+            "longitude": "121.3228877"
+        },
+        {
+            "no": "31",
+            "area": "桃園市中壢區",
+            "type": "a4",
+            "name": "馬祖新村",
+            "address": "桃園市中壢區龍吉二街155號",
+            "latitude": "24.9363924",
+            "longitude": "121.2369065"
+        },
+        {
+            "no": "32",
+            "area": "桃園市中壢區",
+            "type": "a5",
+            "name": "黑松飲料博物館",
+            "address": "桃園市中壢區中園路178號",
+            "latitude": "24.977249",
+            "longitude": "121.2364892"
+        },
+        {
+            "no": "33",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "國立中央大學",
+            "address": "桃園市中壢區中大路300號",
+            "latitude": "24.9656967",
+            "longitude": "121.194406"
+        },
+        {
+            "no": "34",
+            "area": "桃園市中壢區",
+            "type": "a12",
+            "name": "中壢觀光夜市",
+            "address": "桃園市中壢區新明路",
+            "latitude": "24.9591514",
+            "longitude": "121.2149691"
+        },
+        {
+            "no": "35",
+            "area": "桃園市中壢區",
+            "type": "a6",
+            "name": "樂天桃園棒球場",
+            "address": "桃園市中壢區領航北路一段1號",
+            "latitude": "25.0005127",
+            "longitude": "121.2010798"
+        },
+        {
+            "no": "36",
+            "area": "桃園市中壢區",
+            "type": "a13",
+            "name": "大江國際購物中心",
+            "address": "桃園市中壢區中園路二段501號",
+            "latitude": "25.0015283",
+            "longitude": "121.2284747"
+        },
+        {
+            "no": "37",
+            "area": "桃園市中壢區",
+            "type": "a4",
+            "name": "華泰名品城",
+            "address": "桃園市中壢區春德路189號",
+            "latitude": "25.015876",
+            "longitude": "121.2150799"
+        },
+        {
+            "no": "38",
+            "area": "桃園市中壢區",
+            "type": "a8",
+            "name": "中平路故事館",
+            "address": "桃園市中壢區復興路99號",
+            "latitude": "24.9555605",
+            "longitude": "121.2245426"
+        },
+        {
+            "no": "39",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "羊世界牧場",
+            "address": "桃園市中壢區三芝路169號",
+            "latitude": "24.9822338",
+            "longitude": "121.2102047"
+        },
+        {
+            "no": "40",
+            "area": "桃園市中壢區",
+            "type": "a13",
+            "name": "遠東SOGO 中壢店",
+            "address": "桃園市中壢區元化路357號",
+            "latitude": "24.9626957",
+            "longitude": "121.2238507"
+        },
+        {
+            "no": "41",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "光明公園",
+            "address": "桃園市中壢區民權路396號",
+            "latitude": "24.9645894",
+            "longitude": "121.2170219"
+        },
+        {
+            "no": "42",
+            "area": "桃園市中壢區",
+            "type": "a8",
+            "name": "台灣高鐵探索館",
+            "address": "桃園市中壢區高鐵北路一段2號",
+            "latitude": "25.0119007",
+            "longitude": "121.2137003"
+        },
+        {
+            "no": "43",
+            "area": "桃園市中壢區",
+            "type": "a13",
+            "name": "宜家家居 桃園店",
+            "address": "桃園市中壢區高鐵站前東路一段1號",
+            "latitude": "25.0129593",
+            "longitude": "121.2175658"
+        },
+        {
+            "no": "44",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "中壢區青埔市民活動中心",
+            "address": "桃園市中壢區領航南路三段168號",
+            "latitude": "25.009307",
+            "longitude": "121.2198432"
+        },
+        {
+            "no": "45",
+            "area": "桃園市中壢區",
+            "type": "a1",
+            "name": "中壢藝術館",
+            "address": "桃園市中壢區中美路16號",
+            "latitude": "24.9582226",
+            "longitude": "121.2275687"
+        },
+        {
+            "no": "46",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "中正公園",
+            "address": "桃園市中壢區中美路86號",
+            "latitude": "24.959087",
+            "longitude": "121.225708"
+        },
+        {
+            "no": "47",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "莒光公園",
+            "address": "桃園市中壢區莒光路",
+            "latitude": "24.9522687",
+            "longitude": "121.2374969"
+        },
+        {
+            "no": "48",
+            "area": "桃園市中壢區",
+            "type": "a4",
+            "name": "忠貞市場",
+            "address": "桃園市中壢區龍東路160巷1號",
+            "latitude": "24.929443",
+            "longitude": "121.2528966"
+        },
+        {
+            "no": "49",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "龍德公園",
+            "address": "桃園市中壢區龍勇路",
+            "latitude": "24.9377264",
+            "longitude": "121.236945"
+        },
+        {
+            "no": "50",
+            "area": "桃園市中壢區",
+            "type": "a4",
+            "name": "花世界花卉農場",
+            "address": "桃園市中壢區龍興路398號",
+            "latitude": "24.9398773",
+            "longitude": "121.2423824"
+        },
+        {
+            "no": "51",
+            "area": "桃園市中壢區",
+            "type": "a14",
+            "name": "幻境 Fantasy Cafe 裝置藝術咖啡廳",
+            "address": "桃園市中壢區龍興路591號",
+            "latitude": "24.9441166",
+            "longitude": "121.2442991"
+        },
+        {
+            "no": "52",
+            "area": "桃園市中壢區",
+            "type": "a12",
+            "name": "中原夜市",
+            "address": "桃園市中壢區實踐路日新路",
+            "latitude": "24.9556104",
+            "longitude": "121.240614"
+        },
+        {
+            "no": "53",
+            "area": "桃園市中壢區",
+            "type": "a2",
+            "name": "中壢三教紫雲宮",
+            "address": "桃園市中壢區自忠二街126號",
+            "latitude": "24.9450797",
+            "longitude": "121.2234211"
+        },
+        {
+            "no": "54",
+            "area": "桃園市中壢區",
+            "type": "a2",
+            "name": "健福宮",
+            "address": "桃園市中壢區健行路45巷",
+            "latitude": "24.9515111",
+            "longitude": "121.2272645"
+        },
+        {
+            "no": "55",
+            "area": "桃園市中壢區",
+            "type": "a8",
+            "name": "壢小故事森林",
+            "address": "桃園市中壢區博愛路52號",
+            "latitude": "24.9539142",
+            "longitude": "121.2202767"
+        },
+        {
+            "no": "56",
+            "area": "桃園市中壢區",
+            "type": "a7",
+            "name": "華勛公園",
+            "address": "桃園市中壢區華勛街363巷",
+            "latitude": "24.9462814",
+            "longitude": "121.2605566"
+        },
+        {
+            "no": "57",
+            "area": "桃園市中壢區",
+            "type": "a14",
+            "name": "張豐盛商行",
+            "address": "桃園市中壢區中正路349號",
+            "latitude": "24.955248",
+            "longitude": "121.21661"
+        },
+        {
+            "no": "58",
+            "area": "桃園市中壢區",
+            "type": "a14",
+            "name": "nous cafe 我們咖啡",
+            "address": "桃園市中壢區青商路308號1樓",
+            "latitude": "25.0086371",
+            "longitude": "121.2203695"
+        },
+        {
+            "no": "59",
+            "area": "桃園市中壢區",
+            "type": "a14",
+            "name": "blossom forest 食甸森蒔",
+            "address": "桃園市中壢區中央西路二段222號",
+            "latitude": "24.960329",
+            "longitude": "121.212605"
+        },
+        {
+            "no": "60",
+            "area": "桃園市中壢區",
+            "type": "a14",
+            "name": "珀舍咖啡",
+            "address": "桃園市中壢區興仁路一段168號",
+            "latitude": "24.9691936",
+            "longitude": "121.261505"
+        },
+        {
+            "no": "61",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "桃園八德埤塘自然生態公園",
+            "address": "桃園市八德區興豐路1315號",
+            "latitude": "24.9428004",
+            "longitude": "121.3115818"
+        },
+        {
+            "no": "62",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "鎮安宮",
+            "address": "桃園市八德區和平路528巷",
+            "latitude": "24.9517687",
+            "longitude": "121.3128688"
+        },
+        {
+            "no": "63",
+            "area": "桃園市八德區",
+            "type": "a4",
+            "name": "桃拾生活廣場The Tao’s Plaza",
+            "address": "桃園市八德區金和路21-35號",
+            "latitude": "24.9550931",
+            "longitude": "121.2973747"
+        },
+        {
+            "no": "64",
+            "area": "桃園市八德區",
+            "type": "a6",
+            "name": "文昌公園天幕球場",
+            "address": "桃園市八德區文昌街72號",
+            "latitude": "24.9538479",
+            "longitude": "121.294352"
+        },
+        {
+            "no": "65",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "八德三元宮",
+            "address": "桃園市八德區中山路2號",
+            "latitude": "24.9302251",
+            "longitude": "121.2846024"
+        },
+        {
+            "no": "66",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "東興宮",
+            "address": "桃園市八德區廣興五街47號",
+            "latitude": "24.9352062",
+            "longitude": "121.282083"
+        },
+        {
+            "no": "67",
+            "area": "桃園市八德區",
+            "type": "a12",
+            "name": "八德興仁花園夜市",
+            "address": "桃園市八德區長興路46號",
+            "latitude": "24.930515",
+            "longitude": "121.2834579"
+        },
+        {
+            "no": "68",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "豐德公園",
+            "address": "桃園市八德區豐德一路",
+            "latitude": "24.9266163",
+            "longitude": "121.2875956"
+        },
+        {
+            "no": "69",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "興豐公園",
+            "address": "桃園市八德區豐田路45號",
+            "latitude": "24.9296392",
+            "longitude": "121.2895938"
+        },
+        {
+            "no": "70",
+            "area": "桃園市八德區",
+            "type": "a5",
+            "name": "宏亞食品工廠",
+            "address": "桃園市八德區建國路386號",
+            "latitude": "24.9401027",
+            "longitude": "121.2882363"
+        },
+        {
+            "no": "71",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "中華福音神學院",
+            "address": "桃園市八德區長安街53號",
+            "latitude": "24.95406",
+            "longitude": "121.3160715"
+        },
+        {
+            "no": "72",
+            "area": "桃園市八德區",
+            "type": "a5",
+            "name": "宏亞巧克力共和國",
+            "address": "桃園市八德區巧克力街177號",
+            "latitude": "24.941744",
+            "longitude": "121.2929231"
+        },
+        {
+            "no": "73",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "八德落羽松森林",
+            "address": "桃園市八德區浮筧街158之1號",
+            "latitude": "24.9167375",
+            "longitude": "121.2592703"
+        },
+        {
+            "no": "74",
+            "area": "桃園市八德區",
+            "type": "a4",
+            "name": "大湳市場",
+            "address": "桃園市八德區四維路92號",
+            "latitude": "24.9609891",
+            "longitude": "121.2955467"
+        },
+        {
+            "no": "75",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "佛教栴曇精舍",
+            "address": "桃園市八德區大明街2號2樓",
+            "latitude": "24.9688768",
+            "longitude": "121.2958379"
+        },
+        {
+            "no": "76",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "桃邑八德濟顛寺",
+            "address": "桃園市八德區桃德路169號",
+            "latitude": "24.9693264",
+            "longitude": "121.295297"
+        },
+        {
+            "no": "77",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "思源公園",
+            "address": "桃園市八德區正福街137號",
+            "latitude": "24.9740119",
+            "longitude": "121.298966"
+        },
+        {
+            "no": "78",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "西坡埤塘生態公園",
+            "address": "桃園市八德區和平路411巷19號",
+            "latitude": "24.9610293",
+            "longitude": "121.310587"
+        },
+        {
+            "no": "79",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "同福公園",
+            "address": "桃園市八德區和義街",
+            "latitude": "24.9587444",
+            "longitude": "121.3077376"
+        },
+        {
+            "no": "80",
+            "area": "桃園市八德區",
+            "type": "a14",
+            "name": "Daisy Cafe",
+            "address": "桃園市八德區忠勇一街37號",
+            "latitude": "24.9654268",
+            "longitude": "121.3049213"
+        },
+        {
+            "no": "81",
+            "area": "桃園市八德區",
+            "type": "a14",
+            "name": "八塊畫室咖啡",
+            "address": "桃園市八德區長興路46號",
+            "latitude": "24.930515",
+            "longitude": "121.2834579"
+        },
+        {
+            "no": "82",
+            "area": "桃園市八德區",
+            "type": "a2",
+            "name": "石母娘娘浣衣池",
+            "address": "桃園市八德區霄裡路160巷",
+            "latitude": "24.9303538",
+            "longitude": "121.2617869"
+        },
+        {
+            "no": "83",
+            "area": "桃園市八德區",
+            "type": "a11",
+            "name": "伍陽城市原創農場",
+            "address": "桃園市八德區介壽路二段685巷",
+            "latitude": "24.9393723",
+            "longitude": "121.2993667"
+        },
+        {
+            "no": "84",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "茄苳里埤塘公園",
+            "address": "桃園市八德區茄苳里",
+            "latitude": "24.9724893",
+            "longitude": "121.2783728"
+        },
+        {
+            "no": "85",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "大火房泉水浣衣池",
+            "address": "桃園市八德區崁頂路55-12號",
+            "latitude": "24.9432199",
+            "longitude": "121.265086"
+        },
+        {
+            "no": "86",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "高城公園",
+            "address": "桃園市八德區高城六街48巷8號",
+            "latitude": "24.9792371",
+            "longitude": "121.2745047"
+        },
+        {
+            "no": "87",
+            "area": "桃園市八德區",
+            "type": "a11",
+            "name": "八塊厝草莓園",
+            "address": "桃園市八德區廣興路575巷",
+            "latitude": "24.9437909",
+            "longitude": "121.2823195"
+        },
+        {
+            "no": "88",
+            "area": "桃園市八德區",
+            "type": "a7",
+            "name": "八塊綠廊",
+            "address": "桃園市八德區豐吉路2號",
+            "latitude": "24.9264865",
+            "longitude": "121.2903173"
+        },
+        {
+            "no": "89",
+            "area": "桃園市八德區",
+            "type": "a11",
+            "name": "角樂園農場",
+            "address": "桃園市八德區介壽路二段635號",
+            "latitude": "24.9402035",
+            "longitude": "121.2981965"
+        },
+        {
+            "no": "90",
+            "area": "桃園市八德區",
+            "type": "a8",
+            "name": "桃園市政府消防局訓練中心暨防災教育館",
+            "address": "桃園市八德區介壽路二段901巷49弄35號",
+            "latitude": "24.9372731",
+            "longitude": "121.2987644"
+        },
+        {
+            "no": "91",
+            "area": "桃園市楊梅區",
+            "type": "a5",
+            "name": "郭元益糕餅博物館",
+            "address": "桃園市楊梅區青年路9巷3號",
+            "latitude": "24.928922",
+            "longitude": "121.1673694"
+        },
+        {
+            "no": "92",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "楊梅落羽松秘境",
+            "address": "桃園市楊梅區高新街210巷151號",
+            "latitude": "24.9270728",
+            "longitude": "121.1402071"
+        },
+        {
+            "no": "93",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "貴山公園",
+            "address": "桃園市楊梅區中山路121巷4弄43號",
+            "latitude": "24.9063911",
+            "longitude": "121.1481293"
+        },
+        {
+            "no": "94",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "福人步道",
+            "address": "桃園市楊梅區福人路69號",
+            "latitude": "24.8930174",
+            "longitude": "121.1523829"
+        },
+        {
+            "no": "95",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "楊明公園",
+            "address": "桃園市楊梅區中山北路一段390巷41號",
+            "latitude": "24.9105596",
+            "longitude": "121.1584608"
+        },
+        {
+            "no": "96",
+            "area": "桃園市楊梅區",
+            "type": "a1",
+            "name": "海賊王彩繪牆",
+            "address": "桃園市楊梅區裕成路238巷",
+            "latitude": "24.8951996",
+            "longitude": "121.1603768"
+        },
+        {
+            "no": "97",
+            "area": "桃園市楊梅區",
+            "type": "a11",
+            "name": "埔心牧場",
+            "address": "桃園市楊梅區幼獅路一段439號",
+            "latitude": "24.9252697",
+            "longitude": "121.1804792"
+        },
+        {
+            "no": "98",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "瑞溪公園",
+            "address": "桃園市楊梅區瑞梅街",
+            "latitude": "24.9087944",
+            "longitude": "121.1737004"
+        },
+        {
+            "no": "99",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "中山親水公園",
+            "address": "桃園市楊梅區新農街",
+            "latitude": "24.9111046",
+            "longitude": "121.1560731"
+        },
+        {
+            "no": "100",
+            "area": "桃園市楊梅區",
+            "type": "a5",
+            "name": "桃園楊梅雅聞魅力博覽館",
+            "address": "桃園市楊梅區中山北路一段21巷1號",
+            "latitude": "24.9067588",
+            "longitude": "121.1508582"
+        },
+        {
+            "no": "101",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "秀才山5B埤塘公園",
+            "address": "桃園市楊梅區秀才里",
+            "latitude": "24.8889585",
+            "longitude": "121.1395358"
+        },
+        {
+            "no": "102",
+            "area": "桃園市楊梅區",
+            "type": "a8",
+            "name": "楊梅故事園區",
+            "address": "桃園市楊梅區校前路49號",
+            "latitude": "24.9049989",
+            "longitude": "121.1458009"
+        },
+        {
+            "no": "103",
+            "area": "桃園市楊梅區",
+            "type": "a2",
+            "name": "楊梅回善寺",
+            "address": "桃園市楊梅區中山里2鄰環東路116號",
+            "latitude": "24.9039401",
+            "longitude": "121.1525742"
+        },
+        {
+            "no": "104",
+            "area": "桃園市楊梅區",
+            "type": "a5",
+            "name": "自然接觸保養品亮點體驗園",
+            "address": "桃園市楊梅區楊湖路一段351號",
+            "latitude": "24.9118336",
+            "longitude": "121.1340801"
+        },
+        {
+            "no": "105",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "頭重溪公園",
+            "address": "桃園市楊梅區三元街23號",
+            "latitude": "24.9114599",
+            "longitude": "121.1723288"
+        },
+        {
+            "no": "106",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "楊梅市新梅兒童公園",
+            "address": "桃園市楊梅區梅高路52號",
+            "latitude": "24.9166437",
+            "longitude": "121.1450092"
+        },
+        {
+            "no": "107",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "永寧水圳公園",
+            "address": "桃園市楊梅區民權街11號",
+            "latitude": "24.9028857",
+            "longitude": "121.14536"
+        },
+        {
+            "no": "108",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "國寶兒童公園",
+            "address": "桃園市楊梅區秀才路207巷55-83號",
+            "latitude": "24.9000416",
+            "longitude": "121.1420275"
+        },
+        {
+            "no": "109",
+            "area": "桃園市楊梅區",
+            "type": "a4",
+            "name": "合宋源",
+            "address": "桃園市楊梅區115縣道56號",
+            "latitude": "24.937691",
+            "longitude": "121.1235509"
+        },
+        {
+            "no": "110",
+            "area": "桃園市楊梅區",
+            "type": "a12",
+            "name": "楊梅觀光夜市",
+            "address": "桃園市楊梅區秀才路572號",
+            "latitude": "24.8937351",
+            "longitude": "121.1367726"
+        },
+        {
+            "no": "111",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "永寧水圳公園",
+            "address": "桃園市楊梅區民權街11號",
+            "latitude": "24.9028857",
+            "longitude": "121.14536"
+        },
+        {
+            "no": "112",
+            "area": "桃園市楊梅區",
+            "type": "a8",
+            "name": "高爾夫球袋博物舘",
+            "address": "桃園市楊梅區獅一路14號",
+            "latitude": "24.9232886",
+            "longitude": "121.1735892"
+        },
+        {
+            "no": "113",
+            "area": "桃園市楊梅區",
+            "type": "a10",
+            "name": "富岡自行車道",
+            "address": "桃園市楊梅區富豐南路",
+            "latitude": "24.9317593",
+            "longitude": "121.0818164"
+        },
+        {
+            "no": "114",
+            "area": "桃園市楊梅區",
+            "type": "a11",
+            "name": "耀輝休閒牧場",
+            "address": "桃園市楊梅區楊湖路一段654巷81弄88號",
+            "latitude": "24.9205533",
+            "longitude": "121.1279039"
+        },
+        {
+            "no": "115",
+            "area": "桃園市楊梅區",
+            "type": "a11",
+            "name": "和平濕地生態農場",
+            "address": "桃園市楊梅區和平路747號",
+            "latitude": "24.9485178",
+            "longitude": "121.1372312"
+        },
+        {
+            "no": "116",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "櫻花步道",
+            "address": "桃園市楊梅區楊湖路一段923號",
+            "latitude": "24.9110043",
+            "longitude": "121.1199753"
+        },
+        {
+            "no": "117",
+            "area": "桃園市楊梅區",
+            "type": "a3",
+            "name": "江夏堂",
+            "address": "桃園市楊梅區校前路428巷32弄10號",
+            "latitude": "24.8969434",
+            "longitude": "121.1492611"
+        },
+        {
+            "no": "118",
+            "area": "桃園市楊梅區",
+            "type": "a11",
+            "name": "日觀休閒農場",
+            "address": "桃園市楊梅區西高山頂15-2號",
+            "latitude": "24.937456",
+            "longitude": "121.153387"
+        },
+        {
+            "no": "119",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "三角公園",
+            "address": "桃園市楊梅區電研路57號",
+            "latitude": "24.9556546",
+            "longitude": "121.16801"
+        },
+        {
+            "no": "120",
+            "area": "桃園市楊梅區",
+            "type": "a7",
+            "name": "太平山櫻花林",
+            "address": "桃園市楊梅區秀才路769巷",
+            "latitude": "24.8880879",
+            "longitude": "121.1404215"
+        },
+        {
+            "no": "121",
+            "area": "桃園市蘆竹區",
+            "type": "a4",
+            "name": "坑口彩繪村",
+            "address": "桃園市蘆竹區坑口",
+            "latitude": "25.08646",
+            "longitude": "121.26637"
+        },
+        {
+            "no": "122",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "海口運動公園",
+            "address": "海口運動公園",
+            "latitude": "25.1081965",
+            "longitude": "121.2535711"
+        },
+        {
+            "no": "123",
+            "area": "桃園市蘆竹區",
+            "type": "a9",
+            "name": "五酒桶山步道",
+            "address": "五酒桶山步道",
+            "latitude": "25.0659602",
+            "longitude": "121.2939346"
+        },
+        {
+            "no": "124",
+            "area": "桃園市蘆竹區",
+            "type": "a11",
+            "name": "山腳鹿場水鹿之家",
+            "address": "桃園市蘆竹區山腳里山富街137號",
+            "latitude": "25.086347",
+            "longitude": "121.285855"
+        },
+        {
+            "no": "125",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "營盤生態環保公園",
+            "address": "桃園市蘆竹區中山路252號",
+            "latitude": "25.0586771",
+            "longitude": "121.2966729"
+        },
+        {
+            "no": "126",
+            "area": "桃園市蘆竹區",
+            "type": "a5",
+            "name": "義美食品生產生態生活廠區",
+            "address": "桃園市蘆竹區南工路一段11號",
+            "latitude": "25.0597212",
+            "longitude": "121.2780599"
+        },
+        {
+            "no": "127",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "台茂公園",
+            "address": "桃園市蘆竹區南崁路一段112號",
+            "latitude": "25.0536603",
+            "longitude": "121.2885645"
+        },
+        {
+            "no": "128",
+            "area": "桃園市蘆竹區",
+            "type": "a5",
+            "name": "金格觀光工廠",
+            "address": "桃園市蘆竹區大竹北路90之66號",
+            "latitude": "25.0302636",
+            "longitude": "121.2521749"
+        },
+        {
+            "no": "129",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "南崁溪人工溼地綠化園區",
+            "address": "南崁溪人工溼地綠化園區",
+            "latitude": "25.0498278",
+            "longitude": "121.283222"
+        },
+        {
+            "no": "130",
+            "area": "桃園市蘆竹區",
+            "type": "a1",
+            "name": "南崁兒童藝術村",
+            "address": "桃園市蘆竹區吉林路44號",
+            "latitude": "25.0503874",
+            "longitude": "121.297892"
+        },
+        {
+            "no": "131",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "羊稠坑步道",
+            "address": "桃園市蘆竹區羊稠街",
+            "latitude": "25.0510678",
+            "longitude": "121.3023"
+        },
+        {
+            "no": "132",
+            "area": "桃園市蘆竹區",
+            "type": "a1",
+            "name": "長流當代美術館",
+            "address": "桃園市蘆竹區中山路21號",
+            "latitude": "25.0499315",
+            "longitude": "121.3017255"
+        },
+        {
+            "no": "133",
+            "area": "桃園市蘆竹區",
+            "type": "a1",
+            "name": "侏羅紀博物館",
+            "address": "桃園市蘆竹區新南路一段125號B1",
+            "latitude": "25.043508",
+            "longitude": "121.295379"
+        },
+        {
+            "no": "134",
+            "area": "桃園市蘆竹區",
+            "type": "a1",
+            "name": "張榮發文物館",
+            "address": "桃園市蘆竹區中山路6號",
+            "latitude": "25.049265",
+            "longitude": "121.3024739"
+        },
+        {
+            "no": "135",
+            "area": "桃園市蘆竹區",
+            "type": "a2",
+            "name": "桃園南天宮",
+            "address": "桃園市蘆竹區長興路一段230巷",
+            "latitude": "25.0650231",
+            "longitude": "121.2916385"
+        },
+        {
+            "no": "136",
+            "area": "桃園市蘆竹區",
+            "type": "a2",
+            "name": "寶順宮",
+            "address": "桃園縣蘆竹區坑子村土地公坑8號",
+            "latitude": "25.068658",
+            "longitude": "121.31793"
+        },
+        {
+            "no": "137",
+            "area": "桃園市蘆竹區",
+            "type": "a5",
+            "name": "吉祥藝棧",
+            "address": "桃園市蘆竹區吉林路40號",
+            "latitude": "25.0502614",
+            "longitude": "121.2977083"
+        },
+        {
+            "no": "138",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "吉林公園",
+            "address": "桃園市蘆竹區吉林路",
+            "latitude": "25.0499208",
+            "longitude": "121.298123"
+        },
+        {
+            "no": "139",
+            "area": "桃園市蘆竹區",
+            "type": "a2",
+            "name": "慈穩寺",
+            "address": "桃園市蘆竹區泉州路175號",
+            "latitude": "25.1000344",
+            "longitude": "121.2993139"
+        },
+        {
+            "no": "140",
+            "area": "桃園市蘆竹區",
+            "type": "a11",
+            "name": "卿卿百果園",
+            "address": "桃園市蘆竹區山頂街50巷21號",
+            "latitude": "25.0788981",
+            "longitude": "121.255874"
+        },
+        {
+            "no": "141",
+            "area": "桃園市蘆竹區",
+            "type": "a2",
+            "name": "大古山福山宮",
+            "address": "大古山福山宮",
+            "latitude": "25.1010723",
+            "longitude": "121.2906762"
+        },
+        {
+            "no": "142",
+            "area": "桃園市蘆竹區",
+            "type": "a14",
+            "name": "星海之戀咖啡館",
+            "address": "桃園市蘆竹區大古路228號",
+            "latitude": "25.0784359",
+            "longitude": "121.2969674"
+        },
+        {
+            "no": "143",
+            "area": "桃園市蘆竹區",
+            "type": "a14",
+            "name": "古山星辰景觀咖啡",
+            "address": "桃園市蘆竹區小古山路15號",
+            "latitude": "25.1042452",
+            "longitude": "121.290856"
+        },
+        {
+            "no": "144",
+            "area": "桃園市蘆竹區",
+            "type": "a10",
+            "name": "光明河濱公園腳踏車步道",
+            "address": "桃園市蘆竹區光明路二段125巷",
+            "latitude": "25.0476336",
+            "longitude": "121.2874952"
+        },
+        {
+            "no": "145",
+            "area": "桃園市蘆竹區",
+            "type": "a11",
+            "name": "遠東世界花園",
+            "address": "桃園市蘆竹區仁愛路二段7號",
+            "latitude": "25.053306",
+            "longitude": "121.298761"
+        },
+        {
+            "no": "146",
+            "area": "桃園市蘆竹區",
+            "type": "a14",
+            "name": "海灣星空",
+            "address": "桃園市蘆竹區大古路271號",
+            "latitude": "25.0784359",
+            "longitude": "121.2969674"
+        },
+        {
+            "no": "147",
+            "area": "桃園市蘆竹區",
+            "type": "a14",
+            "name": "銀河鐵道咖啡館",
+            "address": "桃園市蘆竹區仁愛路三段580號",
+            "latitude": "25.0551211",
+            "longitude": "121.3128173"
+        },
+        {
+            "no": "148",
+            "area": "桃園市蘆竹區",
+            "type": "a12",
+            "name": "南崁五福夜市",
+            "address": "桃園市蘆竹區仁愛路一段",
+            "latitude": "25.0510962",
+            "longitude": "121.2948955"
+        },
+        {
+            "no": "149",
+            "area": "桃園市蘆竹區",
+            "type": "a11",
+            "name": "泉園休閒農場",
+            "address": "桃園市蘆竹區小古山路183號",
+            "latitude": "25.1042452",
+            "longitude": "121.290856"
+        },
+        {
+            "no": "150",
+            "area": "桃園市蘆竹區",
+            "type": "a7",
+            "name": "三角公園",
+            "address": "桃園市蘆竹區仁愛路一段",
+            "latitude": "25.0510962",
+            "longitude": "121.2948955"
+        },
+        {
+            "no": "151",
+            "area": "桃園市大溪區",
+            "type": "a4",
+            "name": "大溪老街",
+            "address": "桃園市大溪區和平路",
+            "latitude": "24.8852225",
+            "longitude": "121.2873736"
+        },
+        {
+            "no": "152",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "大溪橋",
+            "address": "桃園市大溪區瑞安路一段273號",
+            "latitude": "24.8857744",
+            "longitude": "121.280285"
+        },
+        {
+            "no": "153",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "大溪河濱公園",
+            "address": "桃園市大溪區大鶯路60巷89弄75號",
+            "latitude": "24.8899108",
+            "longitude": "121.2807572"
+        },
+        {
+            "no": "154",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "壹號館",
+            "address": "桃園市大溪區中正路68號",
+            "latitude": "24.8833116",
+            "longitude": "121.2854623"
+        },
+        {
+            "no": "155",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "李騰芳古宅",
+            "address": "桃園市大溪區月眉路198巷32號",
+            "latitude": "24.8909581",
+            "longitude": "121.2955312"
+        },
+        {
+            "no": "156",
+            "area": "桃園市大溪區",
+            "type": "a4",
+            "name": "新南老街",
+            "address": "桃園市大溪區中山路",
+            "latitude": "24.8818045",
+            "longitude": "121.2863768"
+        },
+        {
+            "no": "157",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "大溪埔頂公園",
+            "address": "桃園市大溪區公園路埔仁路",
+            "latitude": "24.9056641",
+            "longitude": "121.2815239"
+        },
+        {
+            "no": "158",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "慈湖陵寝",
+            "address": "桃園市大溪區復興路一段1097號",
+            "latitude": "24.8405409",
+            "longitude": "121.2918944"
+        },
+        {
+            "no": "159",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "後慈湖",
+            "address": "桃園市大溪區承恩路20號",
+            "latitude": "24.831762",
+            "longitude": "121.3052878"
+        },
+        {
+            "no": "160",
+            "area": "桃園市大溪區",
+            "type": "a8",
+            "name": "兩蔣文化園區",
+            "address": "桃園市大溪區復興路一段1097號",
+            "latitude": "24.8405409",
+            "longitude": "121.2918944"
+        },
+        {
+            "no": "161",
+            "area": "桃園市大溪區",
+            "type": "a1",
+            "name": "小小兵彩繪牆",
+            "address": "桃園市大溪區仁和路二段60巷",
+            "latitude": "24.9033278",
+            "longitude": "121.2689248"
+        },
+        {
+            "no": "162",
+            "area": "桃園市大溪區",
+            "type": "a8",
+            "name": "東和音樂體驗館",
+            "address": "桃園市大溪區信義路226號",
+            "latitude": "24.885927",
+            "longitude": "121.2951573"
+        },
+        {
+            "no": "163",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "落羽松大道",
+            "address": "桃園市大溪區落羽松路",
+            "latitude": "24.8706342",
+            "longitude": "121.2561529"
+        },
+        {
+            "no": "164",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "藝師館",
+            "address": "桃園市大溪區普濟路52號",
+            "latitude": "24.8810248",
+            "longitude": "121.2866425"
+        },
+        {
+            "no": "165",
+            "area": "桃園市大溪區",
+            "type": "a8",
+            "name": "大溪老茶廠",
+            "address": "桃園市大溪區復興路二段732巷80號",
+            "latitude": "24.8306657",
+            "longitude": "121.3283928"
+        },
+        {
+            "no": "166",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "subtype": "a2",
+            "name": "大溪神社",
+            "address": "桃園市大溪區普濟路52號",
+            "latitude": "24.8810248",
+            "longitude": "121.2866425"
+        },
+        {
+            "no": "167",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "大溪秘密花園",
+            "address": "桃園市大溪區復興路一段1093巷27號",
+            "latitude": "24.8405944",
+            "longitude": "121.2915189"
+        },
+        {
+            "no": "168",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "天主教方濟生活園區",
+            "address": "桃園市大溪區康莊路305號",
+            "latitude": "24.8768968",
+            "longitude": "121.2878046"
+        },
+        {
+            "no": "169",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "齋明寺古道",
+            "address": "桃園市大溪區齋明街",
+            "latitude": "24.8874623",
+            "longitude": "121.2731764"
+        },
+        {
+            "no": "170",
+            "area": "桃園市大溪區",
+            "type": "a8",
+            "name": "經國紀念館",
+            "address": "桃園市大溪區復興路一段896號",
+            "latitude": "24.8490371",
+            "longitude": "121.2862723"
+        },
+        {
+            "no": "171",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "天御花園",
+            "address": "桃園市大溪區復興路二段45之1號",
+            "latitude": "24.8297433",
+            "longitude": "121.3059099"
+        },
+        {
+            "no": "172",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "木家具館",
+            "address": "桃園市大溪區普濟路21-3號",
+            "latitude": "24.881704",
+            "longitude": "121.285468"
+        },
+        {
+            "no": "173",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "大溪武德殿",
+            "address": "大溪武德殿",
+            "latitude": "24.8658422",
+            "longitude": "121.2969674"
+        },
+        {
+            "no": "174",
+            "area": "桃園市大溪區",
+            "type": "a8",
+            "name": "慈湖蔣公銅像公園",
+            "address": "桃園市大溪區復興路一段1097號",
+            "latitude": "24.8405409",
+            "longitude": "121.2918944"
+        },
+        {
+            "no": "175",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "subtype": "a2",
+            "name": "大溪普濟堂",
+            "address": "桃園市大溪區普濟路124號",
+            "latitude": "24.8865501",
+            "longitude": "121.2860725"
+        },
+        {
+            "no": "176",
+            "area": "桃園市大溪區",
+            "type": "a2",
+            "name": "福仁宮",
+            "address": "桃園市大溪區和平路100號",
+            "latitude": "24.8858688",
+            "longitude": "121.2865555"
+        },
+        {
+            "no": "177",
+            "area": "桃園市大溪區",
+            "type": "a3",
+            "name": "慈康陸橋",
+            "address": "桃園市大溪區康莊路5號",
+            "latitude": "24.8844214",
+            "longitude": "121.2891484"
+        },
+        {
+            "no": "178",
+            "area": "桃園市大溪區",
+            "type": "a7",
+            "name": "月眉人工濕地生態公園",
+            "address": "桃園市大溪區月湖路36號",
+            "latitude": "24.8969554",
+            "longitude": "121.2976363"
+        },
+        {
+            "no": "179",
+            "area": "桃園市大溪區",
+            "type": "a9",
+            "name": "大溪古道(小角仔古道)",
+            "address": "大溪古道(小角仔古道)",
+            "latitude": "24.876362",
+            "longitude": "121.2959149"
+        },
+        {
+            "no": "180",
+            "area": "桃園市大溪區",
+            "type": "a11",
+            "name": "富田花園農場",
+            "address": "桃園市大溪區福安里頭寮一路29巷59號",
+            "latitude": "24.9265404",
+            "longitude": "121.2887261"
+        },
+        {
+            "no": "181",
+            "area": "平鎮區",
+            "type": "a5",
+            "subtype": "a3",
+            "name": "蛋寶生技不老村",
+            "address": "桃園市平鎮區金陵路三段105號",
+            "latitude": "24.9283218",
+            "longitude": "121.2275576"
+        },
+        {
+            "no": "182",
+            "area": "平鎮區",
+            "type": "a7",
+            "subtype": "a3",
+            "name": "平鎮雙連坡碉堡公園(桃園市首座)",
+            "address": "324桃園市平鎮區陸光路14巷96弄10-38號",
+            "latitude": "24.9550199",
+            "longitude": "121.1847202"
+        },
+        {
+            "no": "183",
+            "area": "平鎮區",
+            "type": "a7",
+            "subtype": "a9",
+            "name": "石門大圳過嶺支渠休憩步道",
+            "address": "324桃園市平鎮區台3線102號",
+            "latitude": "24.7211517",
+            "longitude": "121.1116778"
+        },
+        {
+            "no": "184",
+            "area": "平鎮區",
+            "type": "a7",
+            "subtype": "a10",
+            "name": "過嶺支渠步道",
+            "address": "324桃園市平鎮區長安路550號號",
+            "latitude": "24.946949",
+            "longitude": "121.188592"
+        },
+        {
+            "no": "185",
+            "area": "平鎮區",
+            "type": "a7",
+            "subtype": "a3",
+            "name": "1895乙未保台紀念公園",
+            "address": "324桃園市平鎮區復旦路二段66號",
+            "latitude": "24.9480503",
+            "longitude": "121.2053798"
+        },
+        {
+            "no": "186",
+            "area": "平鎮區",
+            "type": "a3",
+            "name": "新光吊橋遺址",
+            "address": "324桃園市平鎮區新光路二段9巷63號",
+            "latitude": "24.9342639",
+            "longitude": "121.206465"
+        },
+        {
+            "no": "187",
+            "area": "平鎮區",
+            "type": "a5",
+            "subtype": "a8",
+            "name": "葡萄王健康活力能量館",
+            "address": "324桃園市平鎮區金陵路二段402號",
+            "latitude": "24.9338425",
+            "longitude": "121.2253132"
+        },
+        {
+            "no": "188",
+            "area": "平鎮區",
+            "type": "a6",
+            "name": "極限運動場",
+            "address": "324桃園市平鎮區延平路一段170號",
+            "latitude": "24.9508039",
+            "longitude": "121.216684"
+        },
+        {
+            "no": "189",
+            "area": "平鎮區",
+            "type": "a1",
+            "subtype": "a8",
+            "name": "桃園市平鎮區社教文化中心",
+            "address": "324桃園市平鎮區環南路三段88號",
+            "latitude": "24.939778",
+            "longitude": "121.2176788"
+        },
+        {
+            "no": "190",
+            "area": "平鎮區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "福明宮",
+            "address": "324桃園市平鎮區雙福路二段2號",
+            "latitude": "24.9658301",
+            "longitude": "121.1852439"
+        },
+        {
+            "no": "191",
+            "area": "平鎮區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "建安宮",
+            "address": "324桃園市平鎮區平東路一段98號",
+            "latitude": "24.9127775",
+            "longitude": "121.2343553"
+        },
+        {
+            "no": "192",
+            "area": "平鎮區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "湧光禪寺",
+            "address": "324桃園市平鎮區湧光路136巷159號",
+            "latitude": "24.8939879",
+            "longitude": "121.2061289"
+        },
+        {
+            "no": "193",
+            "area": "平鎮區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "土地公(廣隆宮)",
+            "address": "324桃園市平鎮區育達路二段94號",
+            "latitude": "24.9510125",
+            "longitude": "121.2057094"
+        },
+        {
+            "no": "194",
+            "area": "平鎮區",
+            "type": "a10",
+            "subtype": "a7",
+            "name": "老街溪畔單車道-綠溪行",
+            "address": "324桃園市平鎮區老街溪河濱步道",
+            "latitude": "24.9474618",
+            "longitude": "121.2131372"
+        },
+        {
+            "no": "195",
+            "area": "平鎮區",
+            "type": "a14",
+            "subtype": "a4",
+            "name": "忠貞新村好物市集",
+            "address": "324桃園市平鎮區貿東路29號",
+            "latitude": "24.9273466",
+            "longitude": "121.2537091"
+        },
+        {
+            "no": "196",
+            "area": "平鎮區",
+            "type": "a3",
+            "subtype": "a4",
+            "name": "社尾游泳路一帶的眷村",
+            "address": "324桃園市平鎮區游泳路120巷",
+            "latitude": "24.9291913",
+            "longitude": "121.2325513"
+        },
+        {
+            "no": "197",
+            "area": "平鎮區",
+            "type": "a4",
+            "subtype": "a3",
+            "name": "鎮南橋-堅美的紅磚古橋",
+            "address": "324桃園市大 坑 缺 溪",
+            "latitude": "24.91336245",
+            "longitude": "121.1910819"
+        },
+        {
+            "no": "198",
+            "area": "平鎮區",
+            "type": "a7",
+            "name": "和美蘭園-平鎮市最多蘭花的地方",
+            "address": "324桃園市平鎮區南華街508號",
+            "latitude": "24.9179515",
+            "longitude": "121.2195484"
+        },
+        {
+            "no": "199",
+            "area": "平鎮區",
+            "type": "a7",
+            "name": "福田農場-精緻有機農業的楷模",
+            "address": "324桃園市平鎮區快速路一段241巷90號",
+            "latitude": "24.899213",
+            "longitude": "121.2449008"
+        },
+        {
+            "no": "200",
+            "area": "平鎮區",
+            "type": "a3",
+            "name": "忠恕堂文化館",
+            "address": "324桃園市平鎮區14鄰68號",
+            "latitude": "24.9296022",
+            "longitude": "121.2053963"
+        },
+        {
+            "no": "201",
+            "area": "平鎮區",
+            "type": "a14",
+            "name": "黃媽媽菜包",
+            "address": "324桃園市平鎮區平東路一段187號",
+            "latitude": "24.9114682",
+            "longitude": "121.2316997"
+        },
+        {
+            "no": "202",
+            "area": "平鎮區",
+            "type": "a3",
+            "name": "伯公橋",
+            "address": "324桃園市平鎮區新光路三段",
+            "latitude": "24.9256007",
+            "longitude": "121.2060928"
+        },
+        {
+            "no": "203",
+            "area": "平鎮區",
+            "type": "a12",
+            "name": "每星期五上海路夜市",
+            "address": "324桃園市平鎮區上海路104號",
+            "latitude": "24.9116641",
+            "longitude": "121.2064773"
+        },
+        {
+            "no": "204",
+            "area": "平鎮區",
+            "type": "a5",
+            "subtype": "a14",
+            "name": "源友咖啡文化園區",
+            "address": "324桃園市平鎮區金陵路二段402號",
+            "latitude": "24.9338425",
+            "longitude": "121.2253132"
+        },
+        {
+            "no": "205",
+            "area": "平鎮區",
+            "type": "a11",
+            "subtype": "a8",
+            "name": "平鎮親子館",
+            "address": "324桃園市平鎮區廣成街10號",
+            "latitude": "24.9566406",
+            "longitude": "121.2088427"
+        },
+        {
+            "no": "206",
+            "area": "平鎮區",
+            "type": "a3",
+            "subtype": "a4",
+            "name": "雲南文化公園",
+            "address": "324桃園市平鎮區忠貞一街",
+            "latitude": "24.9289896",
+            "longitude": "121.2549565"
+        },
+        {
+            "no": "207",
+            "area": "平鎮區",
+            "type": "a3",
+            "subtype": "a8",
+            "name": "異域故事館",
+            "address": "324桃園市平鎮區中山路44-1號",
+            "latitude": "24.9276729",
+            "longitude": "121.254244"
+        },
+        {
+            "no": "208",
+            "area": "平鎮區",
+            "type": "a3",
+            "subtype": "a4",
+            "name": "忠貞新村文化園區",
+            "address": "324桃園市平鎮區中山路70號",
+            "latitude": "24.9279094",
+            "longitude": "121.2543872"
+        },
+        {
+            "no": "209",
+            "area": "復興區",
+            "type": "a9",
+            "name": "拉拉山國家森林遊樂區",
+            "address": "桃園市復興區華陵里11鄰205號",
+            "latitude": "24.6480068",
+            "longitude": "121.4113308"
+        },
+        {
+            "no": "210",
+            "area": "復興區",
+            "type": "a9",
+            "subtype": "a6",
+            "name": "東眼山國家森林遊樂區",
+            "address": "桃園市復興區霞雲里佳志35號",
+            "latitude": "24.827103",
+            "longitude": "121.389213"
+        },
+        {
+            "no": "211",
+            "area": "復興區",
+            "type": "a9",
+            "name": "角板山公園",
+            "address": "桃園市復興區中正路133-1號",
+            "latitude": "24.8162776",
+            "longitude": "121.3490282"
+        },
+        {
+            "no": "212",
+            "area": "復興區",
+            "type": "a9",
+            "name": "小烏來天空步道",
+            "address": "桃園市復興區4-6號",
+            "latitude": "24.709089",
+            "longitude": "121.3770336"
+        },
+        {
+            "no": "213",
+            "area": "復興區",
+            "type": "a7",
+            "subtype": "a6",
+            "name": "桃源仙谷",
+            "address": "桃園市復興區8鄰5號之1號",
+            "latitude": "24.709089",
+            "longitude": "121.3770336"
+        },
+        {
+            "no": "214",
+            "area": "復興區",
+            "type": "a9",
+            "name": "三民蝙蝠洞",
+            "address": "桃園市復興區東側五寮溪溪谷內",
+            "latitude": "24.709089",
+            "longitude": "121.3770336"
+        },
+        {
+            "no": "215",
+            "area": "復興區",
+            "type": "a9",
+            "subtype": "a6",
+            "name": "新溪口吊橋",
+            "address": "桃園市復興區中山路8號",
+            "latitude": "24.8151618",
+            "longitude": "121.3497627"
+        },
+        {
+            "no": "216",
+            "area": "復興區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "基國派老教堂",
+            "address": "桃園市復興區三民里18鄰96-3號",
+            "latitude": "24.8670422",
+            "longitude": "121.2363261"
+        },
+        {
+            "no": "217",
+            "area": "復興區",
+            "type": "a7",
+            "name": "綠光森林綿羊牧場",
+            "address": "桃園縣復興鄉霞雲村 三鄰志繼19號之2",
+            "latitude": "24.817437",
+            "longitude": "121.3749702"
+        },
+        {
+            "no": "218",
+            "area": "復興區",
+            "type": "a9",
+            "name": "巴陵古道生態園區",
+            "address": "桃園市復興區華陵里7鄰29號",
+            "latitude": "24.6480068",
+            "longitude": "121.4113308"
+        },
+        {
+            "no": "219",
+            "area": "復興區",
+            "name": "羅浮橋",
+            "address": "桃園市復興區七號省道21公里處",
+            "latitude": "24.709089",
+            "longitude": "121.3770336"
+        },
+        {
+            "no": "220",
+            "area": "觀音區",
+            "type": "a3",
+            "name": "白沙岬燈塔",
+            "address": "桃園市觀音區光明路216號",
+            "latitude": "25.041313",
+            "longitude": "121.076243"
+        },
+        {
+            "no": "221",
+            "area": "觀音區",
+            "type": "a2",
+            "name": "石觀音",
+            "address": "桃園市觀音區中興路452巷1號",
+            "latitude": "25.0451954",
+            "longitude": "121.0759668"
+        },
+        {
+            "no": "222",
+            "area": "觀音區",
+            "type": "a2",
+            "name": "甘泉寺(石觀音寺)",
+            "address": "桃園市觀音區甘泉街1號",
+            "latitude": "25.0370879",
+            "longitude": "121.0816327"
+        },
+        {
+            "no": "223",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "向陽農場",
+            "address": "桃園市觀音區藍埔里11鄰52號",
+            "latitude": "25.0006848",
+            "longitude": "121.1166193"
+        },
+        {
+            "no": "224",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "桃園龍貓公車站",
+            "address": "桃園市觀音區中山路二段239號",
+            "latitude": "25.0170781",
+            "longitude": "121.1273063"
+        },
+        {
+            "no": "225",
+            "area": "觀音區",
+            "type": "a6",
+            "name": "草漯沙丘",
+            "address": "桃園市大園區老街溪口南岸至觀音區大堀溪口北岸",
+            "latitude": "24.9907652",
+            "longitude": "121.2053914"
+        },
+        {
+            "no": "226",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "林家古厝休閒農場",
+            "address": "桃園市觀音區大富路221號",
+            "latitude": "25.0001886",
+            "longitude": "121.1303846"
+        },
+        {
+            "no": "227",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "長美休閒農場",
+            "address": "桃園市觀音區中山路一段1198號",
+            "latitude": "25.0257428",
+            "longitude": "121.1105645"
+        },
+        {
+            "no": "228",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "白千層綠色隧道",
+            "address": "桃園市觀音區福山路二段51-1號",
+            "latitude": "25.0176498",
+            "longitude": "121.1555505"
+        },
+        {
+            "no": "229",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "蓮花池",
+            "address": "桃園市觀音區桃99鄉道17-9號",
+            "latitude": "25.0044738",
+            "longitude": "121.1211734"
+        },
+        {
+            "no": "230",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "蓮荷園休閒農場 ",
+            "address": "桃園市觀音區金華路690號",
+            "latitude": "25.0128394",
+            "longitude": "121.1159254"
+        },
+        {
+            "no": "231",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "青林農場",
+            "address": "桃園市觀音區大湖路二段131之1號",
+            "latitude": "24.995063",
+            "longitude": "121.1331601"
+        },
+        {
+            "no": "232",
+            "area": "觀音區",
+            "type": "a6",
+            "name": "觀音濱海遊憩區",
+            "address": "桃園市觀音區觀音村25.045002260880,121.065627973964",
+            "latitude": "25.038615",
+            "longitude": "121.080347"
+        },
+        {
+            "no": "233",
+            "area": "觀音區",
+            "type": "a7",
+            "subtype": "a8",
+            "name": "鄉野農場 ( 蕃薯館 )",
+            "address": "桃園縣觀音鄉上大村 5 鄰 121 - 1 號",
+            "latitude": "24.9924035",
+            "longitude": "121.1347155"
+        },
+        {
+            "no": "234",
+            "area": "觀音區",
+            "type": "a6",
+            "subtype": "a7",
+            "name": "白千層綠韻大道",
+            "address": "桃園市觀音區福山路二段",
+            "latitude": "25.0194858",
+            "longitude": "121.1538564"
+        },
+        {
+            "no": "235",
+            "area": "觀音區",
+            "type": "a7",
+            "name": "水蓮之鄉休閒蓮園",
+            "address": "桃園市觀音區金華路112號旁",
+            "latitude": "25.0022034",
+            "longitude": "121.121053"
+        },
+        {
+            "no": "236",
+            "area": "大園區",
+            "type": "a5",
+            "name": "光泉牧場 大園廠",
+            "address": "桃園市大園區大觀路1249號",
+            "latitude": "25.0553433",
+            "longitude": "121.160877"
+        },
+        {
+            "no": "237",
+            "area": "大園區",
+            "type": "a1",
+            "name": "橫山書法藝術館",
+            "address": "桃園市大園區大仁路100號",
+            "latitude": "25.0209389",
+            "longitude": "121.218412"
+        },
+        {
+            "no": "238",
+            "area": "大園區",
+            "type": "a7",
+            "name": "橫山書法藝術公園",
+            "address": "桃園市大園區大成路二段",
+            "latitude": "25.0219701",
+            "longitude": "121.2189435"
+        },
+        {
+            "no": "239",
+            "area": "大園區",
+            "type": "a7",
+            "name": "許厝港濕地",
+            "address": "桃園市大園區許厝港",
+            "latitude": "25.0873338",
+            "longitude": "121.1762524"
+        },
+        {
+            "no": "240",
+            "area": "大園區",
+            "type": "a6",
+            "name": "圳頭村軍史公園",
+            "address": "桃園市大園區西部濱海公路76號",
+            "latitude": "24.8632268",
+            "longitude": "120.9523767"
+        },
+        {
+            "no": "241",
+            "area": "大園區",
+            "type": "a1",
+            "subtype": "a6",
+            "name": "桃園陽光劇場",
+            "address": "桃園市大園區領航北路四段216號",
+            "latitude": "25.0254354",
+            "longitude": "121.2182164"
+        },
+        {
+            "no": "242",
+            "area": "大園區",
+            "type": "a7",
+            "name": "溪海休閒農業區",
+            "address": "桃園市大園區聖德北路828號",
+            "latitude": "25.0329793",
+            "longitude": "121.19541"
+        },
+        {
+            "no": "243",
+            "area": "大園區",
+            "type": "a7",
+            "name": "溪海花卉園區",
+            "address": "桃園市大園區聖德北路847號",
+            "latitude": "25.032504",
+            "longitude": "121.1958625"
+        },
+        {
+            "no": "244",
+            "area": "大園區",
+            "type": "a6",
+            "name": "國防砲陣地運動公園",
+            "address": "桃園市大園區中華路234巷",
+            "latitude": "25.0694823",
+            "longitude": "121.2024267"
+        },
+        {
+            "no": "245",
+            "area": "大園區",
+            "type": "a14",
+            "name": "正Ｕ島",
+            "address": "桃園市大園區大智路83號",
+            "latitude": "25.0221871",
+            "longitude": "121.2163534"
+        },
+        {
+            "no": "246",
+            "area": "大園區",
+            "type": "a6",
+            "name": "豬鼻子沙灘",
+            "address": "桃園市大園區Unnamed Road(需用google map 定位)",
+            "latitude": "25.0492632",
+            "longitude": "121.193945"
+        },
+        {
+            "no": "247",
+            "area": "大園區",
+            "type": "a4",
+            "name": "復興航棧",
+            "address": "桃園市大園區三民路一段538號",
+            "latitude": "25.094854",
+            "longitude": "121.2495364"
+        },
+        {
+            "no": "248",
+            "area": "大園區",
+            "type": "a2",
+            "name": "仁壽宮",
+            "address": "桃園市大園區大觀路18號",
+            "latitude": "25.0654617",
+            "longitude": "121.1964509"
+        },
+        {
+            "no": "249",
+            "area": "大園區",
+            "type": "a2",
+            "name": "福隆宮",
+            "address": "桃園市大園區埔心里4鄰1號",
+            "latitude": "25.0512526",
+            "longitude": "121.219709"
+        },
+        {
+            "no": "250",
+            "area": "大園區",
+            "type": "a7",
+            "name": "橫峰河濱公園",
+            "address": "桃園市大園區(需用google map 定位)",
+            "latitude": "25.0492632",
+            "longitude": "121.193945"
+        },
+        {
+            "no": "251",
+            "area": "大園區",
+            "type": "a14",
+            "name": "聖朵莉烘焙複合式餐廳",
+            "address": "桃園市大園區致遠一路43號",
+            "latitude": "25.0056165",
+            "longitude": "121.2117069"
+        },
+        {
+            "no": "252",
+            "area": "大園區",
+            "name": "大園豆花",
+            "address": "桃園市大園區忠孝一街1號",
+            "latitude": "25.0657414",
+            "longitude": "121.1976366"
+        },
+        {
+            "no": "253",
+            "area": "大園區",
+            "type": "a7",
+            "name": "埔心池公園",
+            "address": "桃園市大園區(需用google map 定位)",
+            "latitude": "25.0492632",
+            "longitude": "121.193945"
+        },
+        {
+            "no": "254",
+            "area": "大園區",
+            "type": "a6",
+            "name": "航心橋",
+            "address": "桃園市大園區老街溪",
+            "latitude": "24.9907652",
+            "longitude": "121.2053914"
+        },
+        {
+            "no": "255",
+            "area": "龍潭區",
+            "type": "a14",
+            "subtype": "a7",
+            "name": "夏夕夏景景觀餐廳",
+            "address": "桃園市龍潭區楊銅路二段588-1號",
+            "latitude": "24.8665486",
+            "longitude": "121.1855845"
+        },
+        {
+            "no": "256",
+            "area": "龍潭區",
+            "type": "a11",
+            "subtype": "a3",
+            "name": "龍潭手信霧隱城",
+            "address": "桃園市龍潭區民豐一街99號",
+            "latitude": "24.8803023",
+            "longitude": "121.242574"
+        },
+        {
+            "no": "257",
+            "area": "龍潭區",
+            "type": "a3",
+            "subtype": "a11",
+            "name": "史努比台灣棒球名人堂",
+            "address": "桃園市龍潭區民生路141巷150號",
+            "latitude": "24.8451128",
+            "longitude": "121.2280722"
+        },
+        {
+            "no": "258",
+            "area": "龍潭區",
+            "type": "a3",
+            "subtype": "a1",
+            "name": "雄獅文具想像力製造所",
+            "address": "桃園市龍潭區中原路二段188號",
+            "latitude": "24.8416591",
+            "longitude": "121.1963382"
+        },
+        {
+            "no": "259",
+            "area": "龍潭區",
+            "type": "a3",
+            "subtype": "a7",
+            "name": "桃園3D地景藝術彩繪-客家文化館",
+            "address": "桃園市龍潭區中正路三林段500號",
+            "latitude": "24.8454699",
+            "longitude": "121.234544"
+        },
+        {
+            "no": "260",
+            "area": "龍潭區",
+            "type": "a12",
+            "name": "龍潭觀光夜市",
+            "address": "桃園市龍潭區中豐路465號",
+            "latitude": "24.8824057",
+            "longitude": "121.2117093"
+        },
+        {
+            "no": "261",
+            "area": "龍潭區",
+            "type": "a14",
+            "name": "桃園享夜景觀咖啡",
+            "address": "桃園市龍潭區楊銅路二段678巷16號",
+            "latitude": "24.8672475",
+            "longitude": "121.1843817"
+        },
+        {
+            "no": "262",
+            "area": "龍潭區",
+            "type": "a14",
+            "name": "白圍牆景觀咖啡廳",
+            "address": "桃園市龍潭區楊銅路二段688-1號",
+            "latitude": "24.8677554",
+            "longitude": "121.1843044"
+        },
+        {
+            "no": "263",
+            "area": "龍潭區",
+            "type": "a14",
+            "subtype": "a3",
+            "name": "藍舍花園",
+            "address": "桃園市龍潭區中正路三林段350號",
+            "latitude": "24.8471382",
+            "longitude": "121.2326046"
+        },
+        {
+            "no": "264",
+            "area": "龍潭區",
+            "type": "a14",
+            "name": "桃園蘭亭映月無菜單料理",
+            "address": "桃園市龍潭區中正路三坑段650號",
+            "latitude": "24.8336684",
+            "longitude": "121.2451321"
+        },
+        {
+            "no": "265",
+            "area": "龍潭區",
+            "type": "a14",
+            "name": "入木三分",
+            "address": "桃園市龍潭區新龍路62號",
+            "latitude": "24.8604729",
+            "longitude": "121.216506"
+        },
+        {
+            "no": "266",
+            "area": "龍潭區",
+            "type": "a14",
+            "name": "松葉園餐廳",
+            "address": "園市龍潭區龍新路三和段1008號",
+            "latitude": "24.850358",
+            "longitude": "121.1756959"
+        },
+        {
+            "no": "267",
+            "area": "龍潭區",
+            "type": "a11",
+            "subtype": "a6",
+            "name": "小人國主題樂園",
+            "address": "桃園市龍潭區高原路891號",
+            "latitude": "24.831238",
+            "longitude": "121.187011"
+        },
+        {
+            "no": "268",
+            "area": "龍潭區",
+            "type": "a7",
+            "subtype": "a6",
+            "name": "三坑自然生態公園",
+            "address": "桃園市龍潭區三坑里堤防旁",
+            "latitude": "24.8465413",
+            "longitude": "121.2540523"
+        },
+        {
+            "no": "269",
+            "area": "龍潭區",
+            "type": "a4",
+            "subtype": "a3",
+            "name": "三坑子老街",
+            "address": "桃園市龍潭區三坑子",
+            "latitude": "24.844939",
+            "longitude": "121.247539"
+        },
+        {
+            "no": "270",
+            "area": "龍潭區",
+            "type": "a10",
+            "subtype": "a6",
+            "name": "三坑鐵馬道",
+            "address": "桃園市龍潭區中正路三坑段304號",
+            "latitude": "24.8419803",
+            "longitude": "121.2439544"
+        },
+        {
+            "no": "271",
+            "area": "龍潭區",
+            "type": "a9",
+            "subtype": "a6",
+            "name": "小粗坑古道",
+            "address": "桃園市龍潭區高平里粗坑2鄰",
+            "latitude": "24.8143141",
+            "longitude": "121.2210149"
+        },
+        {
+            "no": "272",
+            "area": "龍潭區",
+            "type": "a8",
+            "subtype": "a1",
+            "name": "桃園市客家文化館",
+            "address": "桃園市龍潭區中正路三林段500號",
+            "latitude": "24.8454699",
+            "longitude": "121.234544"
+        },
+        {
+            "no": "273",
+            "area": "龍潭區",
+            "type": "a7",
+            "subtype": "a6",
+            "name": "龍潭觀光大池",
+            "address": "桃園市龍潭區上林里中豐路上林段115巷11號",
+            "latitude": "24.8628351",
+            "longitude": "121.2082531"
+        },
+        {
+            "no": "274",
+            "area": "龍潭區",
+            "type": "a3",
+            "subtype": "a8",
+            "name": "龍潭聖蹟亭",
+            "address": "桃園市龍潭區凌雲里竹窩子段二十地號",
+            "latitude": "24.8600844",
+            "longitude": "121.1995309"
+        },
+        {
+            "no": "275",
+            "area": "龍潭區",
+            "type": "a8",
+            "subtype": "a9",
+            "name": "龍潭三水里茶園",
+            "address": "桃園市龍潭區三水里大北坑",
+            "latitude": "24.860785",
+            "longitude": "121.161793"
+        },
+        {
+            "no": "276",
+            "area": "龍潭區",
+            "type": "a1",
+            "name": "石門水文化館",
+            "address": "桃園市龍潭區二坪34號1F",
+            "latitude": "24.8264",
+            "longitude": "121.244118"
+        },
+        {
+            "no": "277",
+            "area": "龜山區",
+            "type": "a6",
+            "subtype": "a7",
+            "name": "龜山第一河濱公園",
+            "address": "桃園市龜山區同心二路旁",
+            "latitude": "24.9958055",
+            "longitude": "121.329672"
+        },
+        {
+            "no": "278",
+            "area": "龜山區",
+            "type": "a9",
+            "subtype": "a6",
+            "name": "龜山楓樹坑步道",
+            "address": "桃園市龜山區楓樹里光峰路281巷12弄",
+            "latitude": "25.0070756",
+            "longitude": "121.342769"
+        },
+        {
+            "no": "279",
+            "area": "龜山區",
+            "type": "a8",
+            "subtype": "a7",
+            "name": "龜山苗圃綠環境生態園區",
+            "address": "桃園市龜山區下湖街320號",
+            "latitude": "25.0371801",
+            "longitude": "121.3435965"
+        },
+        {
+            "no": "280",
+            "area": "龜山區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "桃園威天宮",
+            "address": "桃園市龜山區大坑路三段150巷6弄1號",
+            "latitude": "25.0552697",
+            "longitude": "121.3375005"
+        },
+        {
+            "no": "281",
+            "area": "龜山區",
+            "type": "a5",
+            "subtype": "a8",
+            "name": "台灣菸酒股份有限公司桃園酒廠",
+            "address": "桃園市龜山區文化一路55號",
+            "latitude": "25.0563265",
+            "longitude": "121.3751967"
+        },
+        {
+            "no": "282",
+            "area": "龜山區",
+            "type": "a3",
+            "subtype": "a4",
+            "name": "龜山眷村故事館",
+            "address": "桃園市龜山區光峰路43號",
+            "latitude": "24.998446",
+            "longitude": "121.34047"
+        },
+        {
+            "no": "283",
+            "area": "龜山區",
+            "type": "a8",
+            "subtype": "a3",
+            "name": "台塑企業文物館",
+            "address": "桃園市龜山區文化一路259號長庚大學內",
+            "latitude": "25.0337925",
+            "longitude": "121.3898682"
+        },
+        {
+            "no": "284",
+            "area": "龜山區",
+            "type": "a2",
+            "name": "財團法人桃園市壽山巖觀音寺",
+            "address": "桃園市龜山區萬壽路二段6巷111號",
+            "latitude": "25.0033693",
+            "longitude": "121.3660064"
+        },
+        {
+            "no": "285",
+            "area": "龜山區",
+            "type": "a7",
+            "subtype": "a6",
+            "name": "春天農場",
+            "address": "桃園市龜山區長壽路272號",
+            "latitude": "24.9991094",
+            "longitude": "121.337175"
+        },
+        {
+            "no": "286",
+            "area": "龜山區",
+            "type": "a6",
+            "name": "長庚高爾夫球場",
+            "address": "桃園市龜山區長庚球場路66號",
+            "latitude": "25.0264827",
+            "longitude": "121.3819413"
+        },
+        {
+            "no": "287",
+            "area": "龜山區",
+            "type": "a9",
+            "name": "大棟山",
+            "address": "新北市樹林區與桃園市龜山區交界處",
+            "latitude": "24.9815605",
+            "longitude": "121.4198606"
+        },
+        {
+            "no": "288",
+            "area": "龜山區",
+            "type": "a6",
+            "subtype": "a7",
+            "name": "藝 Tree.Man 攀樹",
+            "address": "桃園市龜山區大同路1350巷",
+            "latitude": "24.9888505",
+            "longitude": "121.3695413"
+        },
+        {
+            "no": "289",
+            "area": "龜山區",
+            "type": "a3",
+            "subtype": "a4",
+            "name": "憲光二村",
+            "address": "桃園市龜山區大同路138巷",
+            "latitude": "24.992305",
+            "longitude": "121.3421889"
+        },
+        {
+            "no": "290",
+            "area": "龜山區",
+            "type": "a1",
+            "subtype": "a3",
+            "name": "禪凌文物藝術",
+            "address": "桃園市龜山區文化三路320-2號",
+            "latitude": "25.0550181",
+            "longitude": "121.3658367"
+        },
+        {
+            "no": "291",
+            "area": "龜山區",
+            "type": "a14",
+            "name": "Nika Bar",
+            "address": "桃園市龜山區文化二路34巷14弄23號",
+            "latitude": "25.0596085",
+            "longitude": "121.3642423"
+        },
+        {
+            "no": "292",
+            "area": "龜山區",
+            "type": "a7",
+            "subtype": "a6",
+            "name": "長庚養生文化村",
+            "address": "桃園市龜山區舊路里長青路2號",
+            "latitude": "25.0197198",
+            "longitude": "121.3704011"
+        },
+        {
+            "no": "293",
+            "area": "龜山區",
+            "type": "a14",
+            "subtype": "a6",
+            "name": "毫米咖啡",
+            "address": "桃園市龜山區體大一路51號",
+            "latitude": "25.0301701",
+            "longitude": "121.3885341"
+        },
+        {
+            "no": "294",
+            "area": "龜山區",
+            "type": "a14",
+            "name": "布納咖啡林口店",
+            "address": "桃園市龜山區復興一路243-1號",
+            "latitude": "25.0569236",
+            "longitude": "121.3634416"
+        },
+        {
+            "no": "295",
+            "area": "龜山區",
+            "type": "a5",
+            "subtype": "a3",
+            "name": "桃園南僑觀光工廠",
+            "address": "桃園市龜山區興邦路 35 號",
+            "latitude": "24.9836099",
+            "longitude": "121.3241612"
+        },
+        {
+            "no": "296",
+            "area": "龜山區",
+            "type": "a6",
+            "subtype": "a7",
+            "name": "桃園龜山中興兒二公園 ",
+            "address": "桃園市龜山區壽山路84巷",
+            "latitude": "24.9955745",
+            "longitude": "121.3273301"
+        },
+        {
+            "no": "297",
+            "area": "龜山區",
+            "type": "a3",
+            "name": "曹丁波洋樓",
+            "address": "桃園市龜山區萬壽路二段1039號",
+            "latitude": "24.9944339",
+            "longitude": "121.335805"
+        },
+        {
+            "no": "298",
+            "area": "龜山區",
+            "type": "a14",
+            "subtype": "a1",
+            "name": "新星巷弄書屋",
+            "address": "桃園市龜山區龜山后街東華巷15號1樓",
+            "latitude": "24.9937266",
+            "longitude": "121.3384842"
+        },
+        {
+            "no": "299",
+            "area": "龜山區",
+            "type": "a8",
+            "subtype": "a6",
+            "name": "小精靈螢火蟲館",
+            "address": "桃園市龜山區31號",
+            "latitude": "25.0199092",
+            "longitude": "121.3655989"
+        },
+        {
+            "no": "300",
+            "area": "龜山區",
+            "type": "a2",
+            "subtype": "a3",
+            "name": "明倫三聖宮",
+            "address": "桃園市龜山區三聖路630號",
+            "latitude": "25.0005234",
+            "longitude": "121.3321898"
+        }
+    	]`
+    var nextpage;
+    //這裡之後要換成使用者的定位位置
+    var map, marker, lat, lng, ulat, ulng, url, encodedURL;
+    function initMap1() {
+                return new Promise((resolve,reject)=>{
+                setTimeout(()=>{
+                console.log("Hello from inside the testAsync function");
+                
+                navigator.geolocation.watchPosition((position) => {
+                console.log(position.coords);
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+                
+                ulat = position.coords.latitude ;
+                ulng = position.coords.longitude ;
+
+
+               
+                });
+
+                resolve();
+
+                ;} ,3000
+                 );
+                
+
+                });
+
+
+        }
+    
+    async function call(){
+
+
+    console.log("Caller");
+    await initMap1();
+    console.log("After waiting");
+
+    
+
+    var initlat = ulat;
+    var initlon = ulng;
+
+    var x;
+    var y;
+    var z;
+    function RandArray(array){
+        var rand = Math.random()*array.length|0;
+        var rValue = array[rand];
+        return rValue;
+    }
+
+
+    var myArray = ['a1','a2','a3','a4','a5','a6','a7','a8','a9','a10','a11','a12','a13','a14']
+    var rValue = RandArray(myArray);
+    x = rValue;
+    var myArray = ['a1','a2','a3','a4','a5','a6','a7','a8','a9','a10','a11','a12','a13','a14']
+    var rValue = RandArray(myArray);
+    y = rValue;
+    var myArray = ['a1','a2','a3','a4','a5','a6','a7','a8','a9','a10','a11','a12','a13','a14']
+    var rValue = RandArray(myArray);
+    z = rValue;
+
+
+
+
+    var pairtype1 = x;
+    var pairtype2 = y;
+    var pairtype3 = z;  
+
+    console.log(JSON.parse(jsonStr)[0].area); 
+    var json = JSON.parse(jsonStr);
+    //計算距離、全域變數宣告
+    var i = 0 ;
+
+    var thrdpoint = 100000; //景點距離
+    var secopoint = 100000;
+    var firspoint = 100000;
+    //第一近
+    var firslat;
+    var firslon;
+    var firsname;
+    var firsadd;
+    //第二近            
+    var secolat;
+    var secolon;
+    var seconame;
+    var secoadd;
+    //第三近              
+    var thrdlat;
+    var thrdlon;
+    var thrdname;
+    var thrdadd;
+    //當前判斷點               
+    var ifpoint;
+
+   
+    function func(){
+	    var a = '123';
+	    for(i=0;i<=299;i++){
+	    	this['a'+i] = Math.abs((json[i].longitude -initlon)*(json[i].latitude -initlat )) ;
+		    console.log(this['a'+i]);
+
+           var ifpoint = this['a'+i] ;
+
+        //可以在外面包一層判斷八字屬性的迴圈
+        if (json[i].type == pairtype1 || json[i].subtype == pairtype1 ||json[i].type == pairtype2 || json[i].subtype == pairtype2 ||json[i].type == pairtype3 || json[i].subtype == pairtype3){
+
+           if (ifpoint < thrdpoint ){
+
+                if (ifpoint < secopoint ) {
+
+                    if (ifpoint < firspoint)  {
+                        //第一名被替代時，要換名次，並遞延原本的資訊
+
+                        thrdlat = secolat ;
+                        thrdlon = secolon ;
+                        thrdname = seconame ;
+                        thrdadd = secoadd ;
+                        thrdpoint = secopoint ;
+
+                        secopoint = firspoint
+                        secolat = firslat ;
+                        secolon = firslon ;
+                        seconame = firsname ;
+                        secoadd = firsadd ;
+
+
+                        firslat = json[i].latitude;
+                        firslon = json[i].longitude;
+                        firsname = json[i].name;
+                        firsadd = json[i].address;
+                        firspoint = ifpoint;
+                        
+                    }  
+                    else {
+                        //第二名被替代時，要換名次，並遞延原本的資訊
+                        thrdlat = secolat ;
+                        thrdlon = secolon ;
+                        thrdname = seconame ;
+                        thrdadd = secoadd ;
+                        thrdpoint = secopoint ;
+
+                        secolat = json[i].latitude;
+                        secolon = json[i].longitude;
+                        seconame = json[i].name;
+                        secoadd = json[i].address;
+                        secopoint = ifpoint;
+                    }
+                }    
+                else {
+                
+                    thrdlat = json[i].latitude;
+                    thrdlon = json[i].longitude;
+                    thrdname = json[i].name;
+                    thrdadd = json[i].address;
+                    thrdpoint = ifpoint;
+                }
+            }
+        }
+        }
+	}
+    
+
+   
+    func();
+    /*
+    document.write (firsname + "<br/>");
+    document.write (firsadd + "<br/>");
+    document.write (firslat + "<br/>");
+    document.write (firslon  + "<br/>"+ "<br/>");  
+   
+
+    document.write (seconame + "<br/>");
+    document.write (secoadd + "<br/>");
+    document.write (secolat + "<br/>");
+    document.write (secolon + "<br/>"+ "<br/>");  
+  
+
+    document.write (thrdname + "<br/>");
+    document.write (thrdadd + "<br/>");
+    document.write (thrdlat + "<br/>");
+    document.write (thrdlon + "<br/>"+ "<br/>");  
+    */
+    
+    
+ 
+    nextpage="FinalMerge2.html?"+`${initlat}&${initlon}&${firslat}&${firslon}&${firsadd}&${firsname}&${secolat}&${secolon}&${secoadd}&${seconame}&${thrdlat}&${thrdlon}&${thrdadd}&${thrdname}`;
+
+    console.log(`${nextpage}`);
+
+    console.log("Finished");
+
+    
+    url = nextpage;
+    console.log(url);
+    encodedURL = encodeURI(url);
+    console.log(encodedURL);
+    
+
+
+    }
+
+    call();
+
+    
+    </script>    
+
+  
+    <p style="text-align:center;">
+    <button id ="newpage"  onclick='location.href=encodedURL'>
+        我已輸入完畢，開始推薦景點！
+       </button>
+
+    </p>
+    
+  
+
+</body>
+ <!--引用google map 的方法-->
+   <!--引用google map 的方法-->
+</html>
+
+
+
+<style>
+    #map {
+        height: 70%;
+    }
+        
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+        height: 100%;
+        margin: 1;
+        padding: 2;
+    }
+</style>
+
+
+
+<script>
+    var map, marker, lat, lng, ulat, ulng;
+        function initMap() {
+            navigator.geolocation.watchPosition((position) => {
+                console.log(position.coords);
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+                
+                ulat = position.coords.latitude ;
+                ulng = position.coords.longitude ;
+
+                
+            });
+            
+        }
+  </script>
